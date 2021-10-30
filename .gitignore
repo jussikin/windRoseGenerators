@@ -1,0 +1,6 @@
+samconfig.toml
+node_modules
+setEnvironment.sh
+test.png
+.DS_Store
+.vscode

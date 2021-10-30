@@ -1,0 +1,58 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  wind rose imagegenerators
+
+Transform:
+- AWS::Serverless-2016-10-31
+
+Parameters: 
+  InfluxUrlParameter:
+    Type: String
+    Description: Url to access infux database
+  InfluxTokenParameter:
+    Type: String
+    Description: 'Token used to access influx databases'
+  InfluxOrgParameter:
+    Type: String
+    Description: 'Influx organisation identifier'
+  InfluxBucketParameter:
+    Type: String
+    Description: 'Bucket to draw influx data from'
+
+Resources:
+  WindRoseApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: Windrose Api Gateway
+      StageName: Prod
+      BinaryMediaTypes:
+      - "*~1*"
+      - "image~1png"
+
+  getWindRoseFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/get-wind-rose.getWindRoseHandler
+      Runtime: nodejs14.x
+      MemorySize: 128
+      Timeout: 100
+      Description: A simple example includes a HTTP get method to get all items from a DynamoDB table.
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref WindRoseApiGateway
+            Path: /{days}
+            Method: GET
+      Environment:
+        Variables:
+          INFLUXURL: !Ref InfluxUrlParameter
+          INFLUXTOKEN: !Ref InfluxTokenParameter
+          INFLUXORG: !Ref InfluxOrgParameter
+          INFLUXBUCKET: !Ref InfluxBucketParameter
+
+Outputs:
+  WebEndpoint:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${WindRoseApiGateway}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+
