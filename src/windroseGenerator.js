@@ -18,8 +18,9 @@ async function generateWindRoseImage(dayspast) {
     let img = imageGenerator.generateBaseImage();
     const memoryStream = new streams.WritableStream();
     imageGenerator.addDataIntoImage(img,data,'rgba(255,0,0, 0.5)');
-    await imageGenerator.writeImageDataToStream(img,memoryStream);
-    return memoryStream.toBuffer();
+    const text = img.svg();
+    console.log(text);
+    return text;
 }
 
 module.exports={generateWindRoseImage}

@@ -10,6 +10,6 @@ describe('windroseGenerator', () => {
         const generator = require('../src/windroseGenerator');
         const fs = require('fs');
         const result = await generator.generateWindRoseImage(1);
-        fs.writeFileSync('test.png',result);
+        fs.writeFileSync('test.svg',result);
     });
 });
